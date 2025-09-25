@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick Check — Quadratic Coefficients</title>
+</head>
+<body style="margin:0;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;background:#F0F4F8;color:#2E3440;min-height:100vh;display:flex;justify-content:center;align-items:center;">
+
+<div style="max-width:600px;width:90%;background:#ffffff;border-radius:16px;padding:24px;box-shadow:0 10px 28px rgba(0,0,0,0.12);text-align:center;">
+  <h2 style="margin-top:0;color:#2E3440;">Quick Check — Quadratic Coefficients</h2>
+  <p style="color:#3B4252;font-size:16px;">Enter a quadratic equation in the form <code style="background:#E5E9F0;padding:2px 6px;border-radius:6px;">ax² + bx + c = 0</code> and see its coefficients.</p>
+
+  <input type="text" id="eqInput" placeholder="e.g., 2x^2 - 3x + 1 = 0"
+         style="width:90%;padding:10px 12px;margin-top:12px;border-radius:10px;border:1px solid #D8DEE9;font-size:16px;color:#2E3440;outline:none;">
+
+  <div style="margin-top:16px;">
+    <button id="parseBtn" style="background:#5E81AC;color:#ffffff;padding:10px 18px;border:none;border-radius:10px;font-size:16px;cursor:pointer;box-shadow:0 6px 16px rgba(94,129,172,0.25);transition:transform 0.12s;">Show Coefficients</button>
+  </div>
+
+  <div id="result" style="margin-top:20px;font-size:18px;font-weight:600;color:#2E3440;"></div>
+</div>
+
+<script>
+// Parse function for simple quadratic equations
+function parseEquation(str){
+  str = str.replace(/\^/g,'').replace(/\s+/g,'').replace(/=0$/,'');
+  str = str.replace(/-/g,'+-');
+  if(str[0]==='+') str=str.slice(1);
+  const parts = str.split('+').filter(Boolean);
+  let a=0,b=0,c=0;
+  parts.forEach(p=>{
+    if(p.includes('x2') || p.includes('x²')){
+      let coef = p.replace(/x2|x²/g,''); if(coef==='') coef='1'; if(coef==='-') coef='-1'; a += parseFloat(coef);
+    } else if(p.includes('x')){
+      let coef = p.replace(/x/g,''); if(coef==='') coef='1'; if(coef==='-') coef='-1'; b += parseFloat(coef);
+    } else {
+      c += parseFloat(p);
+    }
+  });
+  return {a,b,c};
+}
+
+document.getElementById('parseBtn').addEventListener('click', ()=>{
+  const eq = document.getElementById('eqInput').value.trim();
+  const resultEl = document.getElementById('result');
+  if(!eq){ resultEl.textContent = "Please enter an equation."; return; }
+  try{
+    const coeff = parseEquation(eq);
+    resultEl.textContent = `a = ${coeff.a}, b = ${coeff.b}, c = ${coeff.c}`;
+  } catch(e){
+    resultEl.textContent = "Could not parse equation. Use format like 2x^2-3x+1=0.";
+  }
+});
+</script>
+
+</body>
+</html>
